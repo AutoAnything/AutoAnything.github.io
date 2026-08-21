@@ -84,8 +84,17 @@
                 <span class="pa-pfields" id="paParams"></span>
                 <button id="paAdd" class="pa-addbtn">＋ Add</button>
               </div>
+              <ol class="pa-queue" id="paQueue"></ol>
+              <div class="pa-status" id="paStatus"></div>
+            </main>
+
+            <!-- Preview / target window -->
+            <section class="pa-preview">
+              <div class="pa-prev-head">
+                <span>🖥️ Game Launcher.exe</span>
+                <span class="pa-chip">TARGET</span>
+              </div>
               <div class="pa-screen" id="paScreen">
-                <div class="pa-screentitle">Game Launcher.exe</div>
                 <label class="pa-row">Username<input id="tUser" class="pa-field" autocomplete="off" spellcheck="false"></label>
                 <label class="pa-row">Password<input id="tPass" type="password" class="pa-field" autocomplete="off"></label>
                 <button id="tLogin" class="pa-loginbtn">Log in</button>
@@ -93,11 +102,9 @@
                 <input id="tChat" class="pa-chat" placeholder="Chat… say something" autocomplete="off">
                 <div class="pa-cursor" id="paCursor">🖱️</div>
               </div>
-              <ol class="pa-queue" id="paQueue"></ol>
-              <div class="pa-status" id="paStatus"></div>
-              <div class="pa-toast" id="paToast"></div>
-            </main>
+            </section>
           </div>
+          <div class="pa-toast" id="paToast"></div>
         </div>
       </div>
     </section>

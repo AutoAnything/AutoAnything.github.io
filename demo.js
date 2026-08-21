@@ -19,7 +19,12 @@
   var stopReq = false;
   var userTouched = false;
   var autoStarted = false;
-  var cursorPos = { x: 30, y: 30 };
+    var cursorPos = { x: 30, y: 30 };
+  var focusField = $("tUser");
+
+  ["tUser", "tPass", "tChat"].forEach(function (id) {
+    $(id).addEventListener("focus", function () { focusField = this; });
+  });
 
   /* ---------- toasts & status ---------- */
   var toastTimer = null;
@@ -148,9 +153,11 @@
       '<div class="pa-preset-name">' + p.name + "</div>" +
       '<div class="pa-preset-meta"><small>' + p.steps.length +
       " actions</small><span class=\"pa-hotkey\">" + p.hotkey + "</span></div>";
-    b.addEventListener("click", function () {
+        b.addEventListener("click", function () {
       userTouched = true;
       if (running) stopReq = true;
+      ["tUser", "tPass", "tChat"].forEach(function (id) { $(id).value = ""; });
+      focusField = $("tUser");
       presetWrap.querySelectorAll(".pa-preset").forEach(function (el, j) {
         el.classList.toggle("active", j === i);
       });
@@ -247,16 +254,20 @@
         var c = centerOf(a.params.target);
         await moveCursor(c.x, c.y, 550);
         if (stopReq) return;
-        ripple(c.x, c.y);
+                ripple(c.x, c.y);
         await sleep(120);
-        $(a.params.target).click();
+        var tgt = $(a.params.target);
+        tgt.click();
+        if (tgt.tagName === "INPUT") {
+          tgt.focus();
+          focusField = tgt;
+        }
         await sleep(280);
         break;
       }
             case "type": {
-        var field = document.activeElement;
-        if (!field || field.tagName !== "INPUT" ||
-            !screen.contains(field)) field = $("tUser");
+        var field = (focusField && screen.contains(focusField))
+          ? focusField : $("tUser");
         for (var i = 0; i < a.params.text.length; i++) {
           if (stopReq) return;
           field.value += a.params.text[i];
@@ -274,7 +285,9 @@
     }
   }
 
-  async function playOnce() {
+    async function playOnce() {
+    ["tUser", "tPass", "tChat"].forEach(function (id) { $(id).value = ""; });
+    focusField = $("tUser");
     for (var i = 0; i < actions.length; i++) {
       if (stopReq) return false;
       await runAction(actions[i], i);
