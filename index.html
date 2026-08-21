@@ -53,57 +53,67 @@
           </div>
         </div>
         <div class="hero-app">
-          <div class="pa-titlebar">
-            <span class="pa-dots"><i class="pa-dot pa-r"></i><i class="pa-dot pa-y"></i><i class="pa-dot pa-g"></i></span>
-            <span class="pa-title">Macro Builder – Pico Controller</span>
-            <span class="pa-badge">LIVE DEMO</span>
+          <!-- ── Window 1 · Macro Builder ── -->
+          <div class="pa-window">
+            <div class="pa-titlebar">
+              <span class="pa-dots"><i class="pa-dot pa-r"></i><i class="pa-dot pa-y"></i><i class="pa-dot pa-g"></i></span>
+              <span class="pa-title">Macro Builder – Pico Controller</span>
+              <span class="pa-badge">LIVE DEMO</span>
+            </div>
+            <div class="pa-body">
+              <aside class="pa-sidebar">
+                <div class="pa-side-head"><span>📁 Saved Macros</span><button id="paRefresh" title="Refresh">🔄</button></div>
+                <div id="paPresets"></div>
+                <p class="pa-side-hint">click a macro to load &amp; run it</p>
+              </aside>
+              <main class="pa-main">
+                <div class="pa-mainhead"><h1>Macro Builder</h1><label class="pa-loop"><input type="checkbox" id="paLoop"> Loop</label></div>
+                <div class="pa-toolbar">
+                  <button class="pa-tbtn" data-toast="New empty macro created ✨">＋ New</button>
+                  <button class="pa-tbtn" data-toast="🎨 Pixel Test needs a connected Pico 🔌">＋ Pixel Test</button>
+                  <button class="pa-tbtn" data-toast="Saved to your macros folder 💾">💾 Save</button>
+                  <button class="pa-tbtn" data-toast="Resolution locked to this preview 😄">⚙️ Res</button>
+                  <button id="paRun" class="pa-tbtn pa-run">▶️ Run</button>
+                  <button id="paStop" class="pa-tbtn pa-stop" hidden>⏹ Stop</button>
+                </div>
+                <div class="pa-composer">
+                  <select id="paType">
+                    <option value="move">🖱️ Move Mouse</option>
+                    <option value="click">👆 Click</option>
+                    <option value="type">⌨️ Keyboard</option>
+                    <option value="delay">⏱️ Delay</option>
+                  </select>
+                  <span class="pa-pfields" id="paParams"></span>
+                  <button id="paAdd" class="pa-addbtn">＋ Add</button>
+                </div>
+                <ol class="pa-queue" id="paQueue"></ol>
+                <div class="pa-status" id="paStatus"></div>
+              </main>
+            </div>
           </div>
-          <div class="pa-body">
-            <aside class="pa-sidebar">
-              <div class="pa-side-head"><span>📁 Saved Macros</span><button id="paRefresh" title="Refresh">🔄</button></div>
-              <div id="paPresets"></div>
-              <p class="pa-side-hint">click a macro to load &amp; run it</p>
-            </aside>
-            <main class="pa-main">
-              <div class="pa-mainhead"><h1>Macro Builder</h1><label class="pa-loop"><input type="checkbox" id="paLoop"> Loop</label></div>
-              <div class="pa-toolbar">
-                <button class="pa-tbtn" data-toast="New empty macro created ✨">＋ New</button>
-                <button class="pa-tbtn" data-toast="🎨 Pixel Test needs a connected Pico 🔌">＋ Pixel Test</button>
-                <button class="pa-tbtn" data-toast="Saved to your macros folder 💾">💾 Save</button>
-                <button class="pa-tbtn" data-toast="Resolution locked to this preview 😄">⚙️ Res</button>
-                <button id="paRun" class="pa-tbtn pa-run">▶️ Run</button>
-                <button id="paStop" class="pa-tbtn pa-stop" hidden>⏹ Stop</button>
-              </div>
-              <div class="pa-composer">
-                <select id="paType">
-                  <option value="move">🖱️ Move Mouse</option>
-                  <option value="click">👆 Click</option>
-                  <option value="type">⌨️ Keyboard</option>
-                  <option value="delay">⏱️ Delay</option>
-                </select>
-                <span class="pa-pfields" id="paParams"></span>
-                <button id="paAdd" class="pa-addbtn">＋ Add</button>
-              </div>
-              <ol class="pa-queue" id="paQueue"></ol>
-              <div class="pa-status" id="paStatus"></div>
-            </main>
 
-            <!-- Preview / target window -->
-            <section class="pa-preview">
-              <div class="pa-prev-head">
-                <span>🖥️ Game Launcher.exe</span>
-                <span class="pa-chip">TARGET</span>
-              </div>
-              <div class="pa-screen" id="paScreen">
-                <label class="pa-row">Username<input id="tUser" class="pa-field" autocomplete="off" spellcheck="false"></label>
-                <label class="pa-row">Password<input id="tPass" type="password" class="pa-field" autocomplete="off"></label>
-                <button id="tLogin" class="pa-loginbtn">Log in</button>
-                <button id="tChest" class="pa-chest" title="Treasure chest">🎁</button>
-                <input id="tChat" class="pa-chat" placeholder="Chat… say something" autocomplete="off">
-                <div class="pa-cursor" id="paCursor">🖱️</div>
-              </div>
-            </section>
+          <!-- ── Window 2 · Target app ── -->
+          <div class="pa-window pa-target-win">
+            <div class="pa-titlebar">
+              <span class="pa-dots"><i class="pa-dot pa-r"></i><i class="pa-dot pa-y"></i><i class="pa-dot pa-g"></i></span>
+              <span class="pa-title">Game Launcher.exe</span>
+              <span class="pa-chip">TARGET</span>
+            </div>
+            <div class="pa-screen" id="paScreen">
+              <label class="pa-row">Username<input id="tUser" class="pa-field" autocomplete="off" spellcheck="false"></label>
+              <label class="pa-row">Password<input id="tPass" type="password" class="pa-field" autocomplete="off"></label>
+              <button id="tLogin" class="pa-loginbtn">Log in</button>
+              <button id="tChest" class="pa-chest" title="Treasure chest">🎁</button>
+              <input id="tChat" class="pa-chat" placeholder="Chat… say something" autocomplete="off">
+              <div class="pa-cursor" id="paCursor">🖱️</div>
+            </div>
+            <div class="pa-goldbar">
+              <span class="pa-coin">🪙</span> GOLD
+              <b id="paGold">0</b>
+              <span class="pa-goldpop" id="paGoldPop">+50</span>
+            </div>
           </div>
+
           <div class="pa-toast" id="paToast"></div>
         </div>
       </div>

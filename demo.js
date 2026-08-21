@@ -22,9 +22,21 @@
     var cursorPos = { x: 30, y: 30 };
   var focusField = $("tUser");
 
-  ["tUser", "tPass", "tChat"].forEach(function (id) {
+    ["tUser", "tPass", "tChat"].forEach(function (id) {
     $(id).addEventListener("focus", function () { focusField = this; });
   });
+
+  /* ---------- gold score ---------- */
+  var gold = 0;
+  var goldEl = $("paGold");
+  var goldPop = $("paGoldPop");
+  function addGold(n) {
+    gold += n;
+    goldEl.textContent = gold;
+    goldPop.classList.remove("go");
+    void goldPop.offsetWidth; /* restart animation */
+    goldPop.classList.add("go");
+  }
 
   /* ---------- toasts & status ---------- */
   var toastTimer = null;
@@ -125,18 +137,19 @@
   /* ---------- Saved-Macros presets ---------- */
   var PRESETS = [
     { name: "Auto Login", hotkey: "Ctrl+L", steps: [
-      { type: "move", params: { x: 150, y: 60 } },
       { type: "click", params: { target: "tUser" } },
       { type: "type", params: { text: "player_one" } },
       { type: "click", params: { target: "tPass" } },
       { type: "type", params: { text: "hunter2" } },
       { type: "delay", params: { ms: 300 } },
       { type: "click", params: { target: "tLogin" } } ] },
-    { name: "Chest Farmer", hotkey: "F6", steps: [
+    { name: "Chest Farm", hotkey: "F6", steps: [
       { type: "click", params: { target: "tChest" } },
-      { type: "delay", params: { ms: 350 } },
+      { type: "delay", params: { ms: 300 } },
       { type: "click", params: { target: "tChest" } },
-      { type: "delay", params: { ms: 350 } },
+      { type: "delay", params: { ms: 300 } },
+      { type: "click", params: { target: "tChest" } },
+      { type: "delay", params: { ms: 300 } },
       { type: "click", params: { target: "tChest" } } ] },
     { name: "Chat Greeter", hotkey: "Alt+G", steps: [
       { type: "click", params: { target: "tChat" } },
@@ -239,7 +252,7 @@
 
   $("tChest").addEventListener("click", function () {
     this.classList.add("pop");
-    toast("+50 gold 🪙");
+    addGold(50);
     setTimeout(function () { $("tChest").classList.remove("pop"); }, 200);
   });
 

@@ -1101,10 +1101,21 @@ body {
 
 .hero-app {
   position: relative;
+  display: flex;
+  gap: 14px;
+  align-items: stretch;
+}
+
+/* Each demo app is its own standalone window */
+.pa-window {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
   background: #0b1222;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
-  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
   overflow: hidden;
   font-size: 13px;
 }
@@ -1143,7 +1154,8 @@ body {
 
 .pa-body {
   display: flex;
-  min-height: 480px;
+  flex: 1;
+  min-height: 440px;
 }
 
 /* Sidebar */
@@ -1347,25 +1359,49 @@ body {
 
 .pa-addbtn:hover { background: #8c4dff; }
 
-/* Preview / target window (right pane) */
-.pa-preview {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  background: rgba(0, 0, 0, 0.2);
-  border-left: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.pa-prev-head {
+/* Gold HUD in the target window */
+.pa-goldbar {
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 8px;
   padding: 9px 12px;
+  background: #111a2e;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: #fbbf24;
   font-size: 11px;
-  font-weight: 600;
-  color: #94a3b8;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.pa-goldbar b {
+  font-size: 15px;
+  color: #fde68a;
+  min-width: 40px;
+  text-align: left;
+}
+
+.pa-goldpop {
+  position: absolute;
+  left: calc(50% + 34px);
+  top: 50%;
+  transform: translateY(-50%);
+  color: #4ade80;
+  font-size: 12px;
+  font-weight: 700;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pa-goldpop.go {
+  animation: goldFloat 0.9s ease-out forwards;
+}
+
+@keyframes goldFloat {
+  0%   { opacity: 0; transform: translateY(-30%); }
+  20%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-160%); }
 }
 
 .pa-chip {
@@ -1383,7 +1419,7 @@ body {
 .pa-screen {
   position: relative;
   flex: 1;
-  min-height: 240px;
+  min-height: 270px;
   overflow: hidden;
   background:
     radial-gradient(400px 200px at 15% -10%, #1f2937, transparent),
@@ -1604,12 +1640,9 @@ body {
 }
 
 @media (max-width: 620px) {
+  .hero-app { flex-direction: column; }
   .pa-body { flex-direction: column; }
-  .pa-preview {
-    border-left: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-  }
-  .pa-screen { min-height: 200px; }
+  .pa-screen { min-height: 210px; }
   .pa-composer { flex-wrap: wrap; }
   .pa-pfields { flex-basis: 100%; }
   .section { padding: 56px 0; }
