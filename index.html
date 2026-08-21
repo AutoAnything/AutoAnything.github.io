@@ -22,8 +22,9 @@
           <span class="logo-text">Pico Macro Builder</span>
         </div>
         <div class="nav-links">
-          <a href="#features">Features</a>
+                    <a href="#features">Features</a>
           <a href="#screenshots">Screenshots</a>
+          <a href="#demo">Live Demo</a>
           <a href="#pricing">Pricing</a>
           <a href="#faq">FAQ</a>
         </div>
@@ -360,6 +361,72 @@
           </div>
         </div>
       </div>
+        </section>
+
+    <!-- ===== DEMO ===== -->
+    <section id="demo" class="section">
+      <div class="container">
+        <h2 class="section-title">Interactive Live Demo</h2>
+        <p class="section-subtitle">
+          Build a macro below and watch it execute in the demo window.<br />
+          No download required — try it right in your browser.
+        </p>
+        <div class="demo-wrapper">
+          <!-- Macro Builder Panel -->
+          <div class="demo-builder">
+            <h3 class="demo-builder-title">Macro Builder</h3>
+            <div class="demo-action-form">
+              <label>Action Type:</label>
+              <select id="demoActionType">
+                <option value="move">🖱️ Move Mouse</option>
+                <option value="click">👆 Click</option>
+                <option value="type">⌨️ Type Text</option>
+                <option value="delay">⏱️ Delay</option>
+              </select>
+            </div>
+            <div class="demo-param-group">
+              <label id="demoParamLabel">Target:</label>
+              <input type="text" id="demoParamInput" placeholder="e.g. 420, 280" />
+            </div>
+            <button id="demoAddAction" class="demo-add-btn">+ Add Action</button>
+            <div class="demo-action-list" id="demoActionList">
+              <div class="demo-empty">No actions added yet. Select a type above.</div>
+            </div>
+                        <div class="demo-controls">
+              <button id="demoRunBtn" class="demo-run-btn">▶️ Run Macro</button>
+              <button id="demoStopBtn" class="demo-stop-btn" style="display:none;">⏹️ Stop</button>
+              <button id="demoClearBtn" class="demo-clear-btn">🗑️ Clear All</button>
+            </div>
+            <div class="demo-status" id="demoStatus"></div>
+          </div>
+
+          <!-- Demo Screen Window -->
+          <div class="demo-screen-wrapper">
+            <div class="demo-window">
+              <div class="demo-window-header">
+                <div class="demo-window-dots">
+                  <span class="demo-dot demo-dot-red"></span>
+                  <span class="demo-dot demo-dot-yellow"></span>
+                  <span class="demo-dot demo-dot-green"></span>
+                </div>
+                <span class="demo-window-title">Demo Application</span>
+              </div>
+              <div class="demo-window-body" id="demoWindowBody">
+                <div class="demo-desktop">
+                  <div class="demo-icon">📁 Documents</div>
+                  <div class="demo-icon">🌐 Browser</div>
+                  <div class="demo-icon">🎮 Game</div>
+                  <button class="demo-btn" id="targetBtn1" style="left:120px;top:200px;">Click Me</button>
+                  <button class="demo-btn" id="targetBtn2" style="left:300px;top:340px;">Press Here</button>
+                  <div class="demo-label">Sample Application</div>
+                  <div class="demo-text-display" id="demoTextDisplay"></div>
+                </div>
+                <div class="demo-cursor" id="demoCursor">🖱️</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- ===== PRICING ===== -->
@@ -472,8 +539,9 @@
             </div>
           </div>
           <div class="footer-links">
-            <a href="#features">Features</a>
+                        <a href="#features">Features</a>
             <a href="#screenshots">Screenshots</a>
+            <a href="#demo">Live Demo</a>
             <a href="#pricing">Pricing</a>
             <a href="#faq">FAQ</a>
             <a href="mailto:support@picomacrobuilder.local">Support</a>
@@ -489,6 +557,7 @@
       </div>
     </footer>
 
-    <script src="script.js"></script>
+        <script src="script.js"></script>
+    <script src="demo.js"></script>
   </body>
 </html>
