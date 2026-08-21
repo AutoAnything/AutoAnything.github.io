@@ -248,8 +248,60 @@
     stopRequested = true;
   });
 
+  /* ---------- Auto-playing example macro ----------
+   * A sample macro is pre-loaded and loops automatically
+   * when the section scrolls into view. Any visitor
+   * interaction (add / clear / stop) hands over control.
+   */
+  var EXAMPLE = [
+    { type: "move", params: { x: 300, y: 250 } },
+    { type: "delay", params: { ms: 400 } },
+    { type: "click", params: { target: "targetBtn1" } },
+    { type: "move", params: { x: 480, y: 130 } },
+    { type: "type", params: { text: "Hello from Pico Macro Builder!" } },
+    { type: "delay", params: { ms: 600 } },
+    { type: "click", params: { target: "targetBtn2" } }
+  ];
+
+  var userInteracted = false;
+  var autoStarted = false;
+
+  [elAddBtn, elClearBtn, elStopBtn].forEach(function (b) {
+    b.addEventListener("click", function () {
+      userInteracted = true;
+    });
+  });
+
+  async function autoLoop() {
+    while (!userInteracted && !running) {
+      await runMacro();
+      if (userInteracted) break;
+      // short pause between loops (abortable)
+      for (var t = 0; t < 20 && !userInteracted; t++) {
+        await sleep(100);
+      }
+    }
+  }
+
   /* ---------- Init ---------- */
+  actions = EXAMPLE.slice();
   renderList();
   elCursor.style.left = cursorPos.x + "px";
   elCursor.style.top = cursorPos.y + "px";
+  setStatus('<span class="running">▶ Example playing — clear it & build your own!</span>');
+
+  if ("IntersectionObserver" in window) {
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting && !autoStarted) {
+          autoStarted = true;
+          obs.disconnect();
+          setTimeout(autoLoop, 800);
+        }
+      });
+    }, { threshold: 0.35 });
+    obs.observe(document.getElementById("demo"));
+  } else {
+    setTimeout(autoLoop, 1500);
+  }
 })();
