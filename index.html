@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pico Macro Builder — Automate Your Raspberry Pi Pico</title>
+    <meta
+      name="description"
+      content="Pico Macro Builder lets you create, save, and run automated mouse & keyboard macros on your Raspberry Pi Pico. Featuring pixel-color detection, global hotkeys, and real-time mouse position overlay."
+    />
+    <link rel="icon" href="logo.png" />
+    <!-- Stripe.js -->
+    <script src="https://js.stripe.com/v3/"></script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar">
+      <div class="container nav-inner">
+        <div class="logo">
+          <img src="logo.png" alt="Pico Macro Builder" class="logo-img" />
+          <span class="logo-text">Pico Macro Builder</span>
+        </div>
+        <div class="nav-links">
+          <a href="#features">Features</a>
+          <a href="#screenshots">Screenshots</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#faq">FAQ</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+      <div class="container hero-inner">
+        <div class="hero-text">
+          <h1 class="hero-title">
+            <span class="gradient-text">Automate</span> Your
+            <span class="gradient-text">Raspberry Pi Pico</span>
+          </h1>
+          <p class="hero-subtitle">
+            Create and execute automated mouse & keyboard macros with advanced
+            pixel-color detection, global hotkeys, and real-time position
+            overlay — all in one powerful desktop application.
+          </p>
+          <div class="hero-cta">
+            <button id="checkout-btn" class="hero-buy-btn">
+              <span class="btn-text">Buy Now — €29.99</span>
+              <span class="btn-sub">Excluding delivery fee</span>
+            </button>
+                        <p class="hero-note">
+              One-time purchase · Windows · Instant download after purchase
+            </p>
+            <div class="stripe-message"></div>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="app-mockup">
+            <div class="browser-frame">
+              <div class="browser-header">
+                <div class="browser-dots">
+                  <span class="dot dot-red"></span>
+                  <span class="dot dot-yellow"></span>
+                  <span class="dot dot-green"></span>
+                </div>
+                <span class="browser-url">Pico Macro Builder</span>
+              </div>
+              <div class="app-ui">
+                <div class="app-sidebar">
+                  <div class="app-sidebar-header">
+                    <span>Saved Macros</span>
+                    <button class="app-refresh">🔄</button>
+                  </div>
+                  <div class="app-sidebar-content">
+                    <div class="app-macro-item active">
+                      <div class="app-macro-name">Login Sequence</div>
+                      <div class="app-macro-details">12 actions · Ctrl+Alt+L</div>
+                    </div>
+                    <div class="app-macro-item">
+                      <div class="app-macro-name">Farm Bot</div>
+                      <div class="app-macro-details">8 actions · F1</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="app-main">
+                  <div class="app-header">
+                    <span class="app-title">Macro Builder</span>
+                    <div class="app-controls">
+                      <button class="app-btn app-btn-primary">+ Create New</button>
+                      <button class="app-btn app-btn-test">+ Pixel Test</button>
+                      <button class="app-btn app-btn-save">💾 Save</button>
+                      <button class="app-btn app-btn-run">▶️ Run</button>
+                      <button class="app-btn app-btn-settings">⚙️ Res</button>
+                      <label class="app-loop"><input type="checkbox" /> Loop</label>
+                    </div>
+                  </div>
+                  <div class="app-composer">
+                    <div class="app-composer-title">Quick Add Action</div>
+                    <select class="app-select">
+                      <option>🖱️ Move Mouse</option>
+                    </select>
+                    <button class="app-btn app-btn-add">+ Add</button>
+                  </div>
+                  <div class="app-macro-list">
+                    <div class="app-action">🖱️ Move Mouse — X:450, Y:320</div>
+                    <div class="app-action">👆 Click — Left Button</div>
+                    <div class="app-action">⏱️ Delay — 500 ms</div>
+                    <div class="app-action">🎨 Wait for Color</div>
+                    <div class="app-action">⌨️ Keyboard — "Hello World"</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="mouse-overlay-peek">
+              <div class="mouse-overlay-inner">
+                <span class="mouse-label">X</span><span class="mouse-value">782</span>
+                <span class="mouse-sep">|</span>
+                <span class="mouse-label">Y</span><span class="mouse-value">415</span>
+                <span class="mouse-sep">|</span>
+                <span class="mouse-label">RGB</span>
+                <span class="mouse-value">45</span>
+                <span class="mouse-sep">,</span>
+                <span class="mouse-value">126</span>
+                <span class="mouse-sep">,</span>
+                                <span class="mouse-value">221</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== FEATURES ===== -->
+    <section id="features" class="section">
+      <div class="container">
+        <h2 class="section-title">Powerful Features</h2>
+        <p class="section-subtitle">
+          Everything you need to build, run, and manage complex automation macros
+          for your Raspberry Pi Pico.
+        </p>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon"><span class="icon-bg">🖱️</span></div>
+            <h3 class="feature-title">Visual Macro Builder</h3>
+            <p class="feature-desc">
+              Drag &amp; drop actions including mouse movements, clicks,
+              keyboard input, delays, and text entry. No scripting required.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><span class="icon-bg">🎨</span></div>
+            <h3 class="feature-title">Pixel Color Detection</h3>
+            <p class="feature-desc">
+              Wait for specific screen pixels to match target colors before
+              executing actions. Includes search areas, scan steps, and
+              tolerance settings.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><span class="icon-bg">⌨️</span></div>
+            <h3 class="feature-title">Global Hotkeys</h3>
+            <p class="feature-desc">
+              Assign custom hotkeys (Ctrl+F1, Alt+Q, etc.) to trigger any macro
+              instantly from anywhere — even while gaming or working.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><span class="icon-bg">🖥️</span></div>
+            <h3 class="feature-title">Mouse Position Overlay</h3>
+            <p class="feature-desc">
+              Real-time transparent overlay showing X/Y coordinates and RGB
+              color under cursor — essential for precise pixel targeting.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><span class="icon-bg">📐</span></div>
+            <h3 class="feature-title">Resolution Calibration</h3>
+            <p class="feature-desc">
+              Calibrate for any screen resolution with presets
+              (1080p, 1440p, 4K) or custom dimensions for pixel-perfect
+              positioning.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><span class="icon-bg">⚡</span></div>
+            <h3 class="feature-title">Performance Mode</h3>
+                        <p class="feature-desc">
+              Optimized rendering for large macro lists with hundreds of
+              actions. Smooth scrolling and virtual rendering for heavy use.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SCREENSHOTS ===== -->
+    <section id="screenshots" class="section section-alt">
+      <div class="container">
+        <h2 class="section-title">See It In Action</h2>
+        <p class="section-subtitle">A clean, dark-themed interface designed for precision automation.</p>
+        <div class="screenshots-grid">
+          <div class="screenshot-card">
+            <div class="screenshot-frame">
+              <div class="screenshot-window">
+                <div class="ss-browser-header">
+                  <div class="ss-browser-dots">
+                    <span class="ss-dot ss-red"></span>
+                    <span class="ss-dot ss-yellow"></span>
+                    <span class="ss-dot ss-green"></span>
+                  </div>
+                  <span class="ss-browser-title">Pico Macro Builder — Macro Editor</span>
+                </div>
+                <div class="ss-app">
+                  <div class="ss-sidebar">
+                    <div class="ss-sidebar-header"><span>Saved Macros</span></div>
+                    <div class="ss-macro-item ss-active">
+                      <div>Game Combo</div>
+                      <div class="ss-meta">8 actions · F1</div>
+                    </div>
+                    <div class="ss-macro-item"><div>Type Text</div><div class="ss-meta">3 actions</div></div>
+                    <div class="ss-macro-item"><div>Clicker</div><div class="ss-meta">5 actions</div></div>
+                  </div>
+                  <div class="ss-main">
+                    <div class="ss-main-header">
+                      <span class="ss-main-title">Macro Builder</span>
+                      <div class="ss-btn-group">
+                        <span class="ss-btn ss-btn-primary">+ Create New</span>
+                        <span class="ss-btn ss-btn-test">+ Pixel Test</span>
+                        <span class="ss-btn ss-btn-save">💾 Save</span>
+                        <span class="ss-btn ss-btn-run">▶️ Run</span>
+                        <span class="ss-btn ss-btn-settings">⚙️ Res</span>
+                        <label class="ss-loop"><input type="checkbox" /> Loop</label>
+                      </div>
+                    </div>
+                    <div class="ss-composer">
+                      <span class="ss-composer-title">Quick Add Action</span>
+                      <select class="ss-action-select"><option>🖱️ Move Mouse</option></select>
+                    </div>
+                    <div class="ss-actions">
+                      <div class="ss-action">🖱️ Move Mouse — X:450, Y:320</div>
+                      <div class="ss-action">👆 Click — Left Button</div>
+                      <div class="ss-action">⏱️ Delay — 500 ms</div>
+                      <div class="ss-action">🎨 Wait for Color — RGB(71,82,91)</div>
+                      <div class="ss-action">⌨️ Keyboard — "Hello World"</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+                        <p class="screenshot-caption">Main interface with sidebar, macro controls, and action list</p>
+          </div>
+          <!-- Screenshot 2: Pixel Test Modal -->
+          <div class="screenshot-card">
+            <div class="screenshot-frame">
+              <div class="screenshot-window">
+                <div class="ss-browser-header">
+                  <div class="ss-browser-dots">
+                    <span class="ss-dot ss-red"></span>
+                    <span class="ss-dot ss-yellow"></span>
+                    <span class="ss-dot ss-green"></span>
+                  </div>
+                  <span class="ss-browser-title">Pixel Test Settings</span>
+                </div>
+                <div class="ss-app">
+                  <div class="ss-pixel-test">
+                    <div class="ss-pt-title">Pixel Test Settings</div>
+                    <div class="ss-pt-fieldset">
+                      <legend>Initial Color (start trigger)</legend>
+                      <div class="ss-pt-grid">
+                        <div class="ss-pt-field">X <input type="number" value="53" /></div>
+                        <div class="ss-pt-field">Y <input type="number" value="58" /></div>
+                        <div class="ss-pt-field">R <input type="number" value="71" /></div>
+                        <div class="ss-pt-field">G <input type="number" value="82" /></div>
+                        <div class="ss-pt-field">B <input type="number" value="91" /></div>
+                        <div class="ss-pt-field">Tol. <input type="number" value="5" /></div>
+                      </div>
+                    </div>
+                    <div class="ss-pt-fieldset">
+                      <legend>Fixed Pixel</legend>
+                      <div class="ss-pt-grid">
+                        <div class="ss-pt-field">X <input type="number" value="152" /></div>
+                        <div class="ss-pt-field">Y <input type="number" value="108" /></div>
+                        <div class="ss-pt-field">R <input type="number" value="218" /></div>
+                        <div class="ss-pt-field">G <input type="number" value="139" /></div>
+                        <div class="ss-pt-field">B <input type="number" value="74" /></div>
+                        <div class="ss-pt-field">Tol. <input type="number" value="5" /></div>
+                      </div>
+                    </div>
+                    <div class="ss-pt-fieldset">
+                      <legend>Search Color</legend>
+                      <div class="ss-pt-grid">
+                        <div class="ss-pt-field">R <input type="number" value="124" /></div>
+                        <div class="ss-pt-field">G <input type="number" value="91" /></div>
+                        <div class="ss-pt-field">B <input type="number" value="72" /></div>
+                        <div class="ss-pt-field">Tol. <input type="number" value="10" /></div>
+                      </div>
+                    </div>
+                    <div class="ss-pt-fieldset">
+                      <legend>Scan Settings</legend>
+                      <div class="ss-pt-grid">
+                        <div class="ss-pt-field">Step <input type="number" value="2" /></div>
+                        <div class="ss-pt-field">Interval <input type="number" value="10" /> ms</div>
+                      </div>
+                    </div>
+                    <div class="ss-pt-actions">
+                      <button class="ss-btn ss-btn-secondary">Cancel</button>
+                      <button class="ss-btn ss-btn-primary">Run Test</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+                        <p class="screenshot-caption">Pixel Test modal with advanced color detection settings</p>
+          </div>
+          <!-- Screenshot 3: Resolution Setup -->
+          <div class="screenshot-card">
+            <div class="screenshot-frame">
+              <div class="screenshot-window">
+                <div class="ss-browser-header">
+                  <div class="ss-browser-dots">
+                    <span class="ss-dot ss-red"></span>
+                    <span class="ss-dot ss-yellow"></span>
+                    <span class="ss-dot ss-green"></span>
+                  </div>
+                  <span class="ss-browser-title">Screen Resolution Setup</span>
+                </div>
+                <div class="ss-app">
+                  <div class="ss-res-modal">
+                    <div class="ss-res-title">🖥️ Screen Resolution Setup</div>
+                    <p class="ss-res-desc">
+                      Please select your screen resolution for accurate mouse positioning:
+                    </p>
+                    <div class="ss-form-group">
+                      <label>Resolution Preset:</label>
+                      <select class="ss-res-select">
+                        <option>Select a preset...</option>
+                        <option>1920 × 1080 (Full HD)</option>
+                        <option>2560 × 1440 (2K QHD)</option>
+                        <option>3840 × 2160 (4K UHD)</option>
+                        <option>1366 × 768 (HD)</option>
+                        <option>1600 × 900 (HD+)</option>
+                        <option selected>2560 × 1600 (WQXGA)</option>
+                        <option>3440 × 1440 (Ultrawide)</option>
+                        <option>5120 × 1440 (Super Ultrawide)</option>
+                        <option>Custom Resolution</option>
+                      </select>
+                    </div>
+                    <div class="ss-res-selected">
+                      <strong>Selected Resolution:</strong> 1920 × 1080
+                    </div>
+                    <div class="ss-res-actions">
+                      <button class="ss-btn ss-btn-secondary">Cancel</button>
+                      <button class="ss-btn ss-btn-primary">Save &amp; Continue</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p class="screenshot-caption">Resolution calibration with presets for all displays</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PRICING ===== -->
+    <section id="pricing" class="section">
+      <div class="container">
+        <h2 class="section-title">Simple, Transparent Pricing</h2>
+        <p class="section-subtitle">One-time purchase. No subscriptions. No hidden fees.</p>
+        <div class="pricing-card">
+          <div class="pricing-badge"><span class="badge-text">One-Time Payment</span></div>
+          <div class="pricing-content">
+            <div class="pricing-header">
+              <h3 class="pricing-title">Pico Macro Builder</h3>
+              <div class="pricing-price">
+                <span class="price-amount">€29.99</span>
+                <span class="price-desc">(Excluding delivery fee)</span>
+              </div>
+            </div>
+            <ul class="pricing-features">
+              <li class="pricing-feature"><span class="check-icon">✓</span> Full macro builder application</li>
+              <li class="pricing-feature"><span class="check-icon">✓</span> Pixel color detection</li>
+              <li class="pricing-feature"><span class="check-icon">✓</span> Global hotkey support</li>
+              <li class="pricing-feature"><span class="check-icon">✓</span> Mouse position overlay</li>
+              <li class="pricing-feature"><span class="check-icon">✓</span> Resolution calibration</li>
+              <li class="pricing-feature"><span class="check-icon">✓</span> Performance mode for large lists</li>
+              <li class="pricing-feature"><span class="check-icon">✓</span> Emergency stop & loop modes</li>
+              <li class="pricing-feature"><span class="check-icon">✓</span> Lifetime updates included</li>
+            </ul>
+            <button id="checkout-btn-2" class="pricing-buy-btn">
+              <span class="btn-text">
+                <svg class="stripe-logo" width="20" height="20" viewBox="0 0 32 32" fill="currentColor">
+                  <path d="M16 1.6c-4.2 0-8 3.4-8 7.6 0 3.6 2.8 6.6 6.5 7.3.5.1.7-.2.7-.5v-1.2c-2.6-.6-4.4-3-4.4-5.6 0-3.4 2.8-6 6.3-6 3.5 0 6.3 2.6 6.3 5.8 0 3.5-2.7 6.1-6.5 6.6-.5.1-.8.4-.8.9v1.4c0 .6.5 1.1 1.1 1.1 3.9-.6 6.9-4 6.9-8.1 0-4.2-3.4-7.6-8-7.6z"/>
+                </svg>
+                Buy with Stripe — €29.99
+              </span>
+              <span class="btn-sub">Secure checkout · Excluding delivery fee</span>
+            </button>
+                        <p class="pricing-note">
+              By purchasing, you'll receive an instant download link and license key.
+                            Secure payment powered by Stripe.
+            </p>
+            <div class="stripe-message"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== FAQ ===== -->
+    <section id="faq" class="section section-alt">
+      <div class="container">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <div class="faq-grid">
+          <div class="faq-item">
+            <h3 class="faq-question">What is Pico Macro Builder?</h3>
+            <p class="faq-answer">
+              A desktop application for Windows that lets you create automated
+              mouse and keyboard macros for your Raspberry Pi Pico. Build, save,
+              and run macros with visual scripting — no code needed.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">What do I need to run it?</h3>
+            <p class="faq-answer">
+              A Windows PC, a Raspberry Pi Pico (or compatible RP2040 board),
+              and a USB cable that supports data transfer (not charge-only).
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">When do I get the software?</h3>
+            <p class="faq-answer">
+              Immediately after completing your Stripe payment, you'll receive an
+              instant download link and license key on the confirmation page.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">What's included in the price?</h3>
+            <p class="faq-answer">
+              The full Pico Macro Builder application (v1.1.0) plus all future
+              updates. This is a one-time purchase of €29.99 — delivery fees are
+              separate. No subscriptions.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">How does Stripe Checkout work?</h3>
+            <p class="faq-answer">
+              Stripe Checkout is a secure, pre-configured payment page hosted by
+              Stripe. Clicking "Buy Now" redirects you to Stripe's secure
+              checkout where you enter payment details. No server setup required.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Can I get a refund?</h3>
+                        <p class="faq-answer">
+              We offer a 14-day money-back guarantee. If you're not satisfied,
+              contact support within 14 days of purchase for a full refund.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-inner">
+          <div class="footer-brand">
+            <img src="logo.png" alt="Pico Macro Builder" class="footer-logo" />
+            <div class="footer-brand-text">
+              <span class="footer-name">Pico Macro Builder</span>
+              <span class="footer-tag">v1.1.0</span>
+            </div>
+          </div>
+          <div class="footer-links">
+            <a href="#features">Features</a>
+            <a href="#screenshots">Screenshots</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#faq">FAQ</a>
+            <a href="mailto:support@picomacrobuilder.local">Support</a>
+          </div>
+          <div class="footer-copy">
+            <p>
+              &copy; 2025 Pico Macro Builder. All rights reserved.<br />
+              Secure payments powered by
+              <a href="https://stripe.com" target="_blank" rel="noopener" class="stripe-link">Stripe</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>

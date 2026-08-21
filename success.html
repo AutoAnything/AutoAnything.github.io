@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payment Successful — Pico Macro Builder</title>
+    <link rel="icon" href="logo.png" />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      .success-page {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 40px 20px;
+      }
+      .success-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 60px;
+        max-width: 560px;
+        box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4);
+      }
+      .success-icon {
+        width: 80px;
+        height: 80px;
+        background: rgba(16, 185, 129, 0.15);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 32px;
+        font-size: 40px;
+      }
+      .success-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 16px;
+      }
+      .success-title .gradient-text {
+        background: linear-gradient(135deg, var(--success) 0%, #38bdf8 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .success-desc {
+        color: var(--muted);
+        font-size: 1.05rem;
+        line-height: 1.7;
+        margin-bottom: 32px;
+      }
+      .success-actions {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .success-actions a {
+        background: var(--accent);
+        color: white;
+        border: none;
+        padding: 12px 28px;
+        border-radius: var(--radius);
+        font-weight: 600;
+        text-decoration: none;
+        transition: var(--transition);
+        flex: 1;
+        min-width: 180px;
+        text-align: center;
+      }
+      .success-actions a:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(124, 58, 237, 0.4);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="success-page">
+      <div class="success-card">
+        <div class="success-icon">✓</div>
+        <h1 class="success-title">
+          <span class="gradient-text">Payment Successful!</span>
+        </h1>
+        <p class="success-desc">
+          Thank you for purchasing Pico Macro Builder! Your payment has been
+          processed successfully. Check your email for the download link and
+          license key.
+        </p>
+        <div class="success-actions">
+          <a href="index.html">← Back to Home</a>
+          <a href="mailto:support@picomacrobuilder.local">Contact Support</a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
