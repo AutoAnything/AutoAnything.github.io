@@ -1,162 +1,196 @@
 /* ========================================================
- * Pico Macro Builder — Interactive Live Demo
- * Visitors build a macro and watch it play out in the
- * simulated desktop window below.
+ * Pico Macro Builder — live app replica demo
  * ======================================================== */
 (function () {
   "use strict";
 
-  var WINDOW_W = 640;
-  var WINDOW_H = 420;
-
-  var elType = document.getElementById("demoActionType");
-  var elParamGroup = document.querySelector(".demo-param-group");
-  var elAddBtn = document.getElementById("demoAddAction");
-  var elList = document.getElementById("demoActionList");
-  var elRunBtn = document.getElementById("demoRunBtn");
-  var elStopBtn = document.getElementById("demoStopBtn");
-  var elClearBtn = document.getElementById("demoClearBtn");
-  var elBody = document.getElementById("demoWindowBody");
-  var elCursor = document.getElementById("demoCursor");
-  var elText = document.getElementById("demoTextDisplay");
-  var elStatus = document.getElementById("demoStatus");
+  var $ = function (id) { return document.getElementById(id); };
+  var screen = $("paScreen");
+  var cursor = $("paCursor");
+  var queueEl = $("paQueue");
+  var statusEl = $("paStatus");
+  var toastEl = $("paToast");
+  var typeSel = $("paType");
+  var paramsEl = $("paParams");
+  var loopChk = $("paLoop");
 
   var actions = [];
   var running = false;
-  var stopRequested = false;
-  var cursorPos = { x: 40, y: 40 };
+  var stopReq = false;
+  var userTouched = false;
+  var autoStarted = false;
+  var cursorPos = { x: 30, y: 30 };
 
-  /* ---------- Parameter field rendering ---------- */
+  /* ---------- toasts & status ---------- */
+  var toastTimer = null;
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () {
+      toastEl.classList.remove("show");
+    }, 2200);
+  }
+
+  function status(msg, on) {
+    statusEl.innerHTML = on ? '<span class="on">' + msg + "</span>" : msg;
+  }
+
+  /* ---------- composer param fields ---------- */
   var FIELDS = {
     move:
-      '<div class="demo-param-row">' +
-      '<div><label>X</label><input type="number" id="dpX" value="300" min="0" max="' +
-      WINDOW_W + '"></div>' +
-      '<div><label>Y</label><input type="number" id="dpY" value="250" min="0" max="' +
-      WINDOW_H + '"></div></div>',
+      '<input type="number" id="ppX" value="260" min="0" placeholder="X">' +
+      '<input type="number" id="ppY" value="90" min="0" placeholder="Y">',
     click:
-      "<div><label>Target</label><select id=\"dpTarget\">" +
-      '<option value="targetBtn1">“Click Me” button</option>' +
-      '<option value="targetBtn2">“Press Here” button</option>' +
-      "</select></div>",
+      '<select id="ppTarget">' +
+      '<option value="tUser">Username field</option>' +
+      '<option value="tPass">Password field</option>' +
+      '<option value="tLogin">Log in button</option>' +
+      '<option value="tChest">🎁 Treasure chest</option>' +
+      '<option value="tChat">Chat box</option></select>',
     type:
-      '<div><label>Text</label><input type="text" id="dpText" placeholder="Hello world!" maxlength="120"></div>',
+      '<input type="text" id="ppText" placeholder="text to type…" maxlength="60">',
     delay:
-      '<div><label>Duration (ms)</label><input type="number" id="dpDelay" value="800" min="100" max="5000" step="100"></div>',
+      '<input type="number" id="ppMs" value="500" min="100" step="100" placeholder="ms">',
   };
 
   function renderFields() {
-    var t = elType.value;
-    elParamGroup.innerHTML = FIELDS[t];
-    // update label
-    var lbl = elParamGroup.querySelector("label");
-    if (t === "move") lbl.textContent = "Position";
+    paramsEl.innerHTML = FIELDS[typeSel.value];
   }
-  elType.addEventListener("change", renderFields);
+  typeSel.addEventListener("change", renderFields);
   renderFields();
 
   function readParams() {
-    var t = elType.value;
+    var t = typeSel.value, w = screen.offsetWidth, h = screen.offsetHeight;
     switch (t) {
       case "move":
         return {
-          x: Math.max(0, Math.min(WINDOW_W, Number(document.getElementById("dpX").value) || 0)),
-          y: Math.max(0, Math.min(WINDOW_H, Number(document.getElementById("dpY").value) || 0)),
+          x: Math.min(w - 10, Math.max(0, +$("ppX").value || 0)),
+          y: Math.min(h - 10, Math.max(0, +$("ppY").value || 0)),
         };
       case "click":
-        return { target: document.getElementById("dpTarget").value };
+        return { target: $("ppTarget").value };
       case "type":
-        return { text: document.getElementById("dpText").value || "" };
+        return { text: $("ppText").value };
       case "delay":
-        return { ms: Math.max(100, Number(document.getElementById("dpDelay").value) || 500) };
+        return { ms: Math.max(100, +$("ppMs").value || 500) };
     }
   }
 
-  /* ---------- Action list management ---------- */
-  function describe(a) {
-    switch (a.type) {
-      case "move":
-        return "🖱️ Move → (" + a.params.x + ", " + a.params.y + ")";
-      case "click":
-        return "👆 Click → “" +
-          document.getElementById(a.params.target).textContent.trim() + "”";
-      case "type":
-        return "⌨️ Type → “" + (a.params.text || "(empty)") + "”";
-      case "delay":
-        return "⏱️ Delay → " + a.params.ms + " ms";
-    }
-  }
+  /* ---------- queue rendering ---------- */
+  var TARGET_NAMES = {
+    tUser: "Username", tPass: "Password", tLogin: "Log in",
+    tChest: "🎁 Chest", tChat: "Chat box",
+  };
 
-  function renderList() {
+  var LABELS = {
+    move: function (p) { return "🖱️ Move → (" + p.x + ", " + p.y + ")"; },
+    click: function (p) { return "👆 Click → " + TARGET_NAMES[p.target]; },
+    type: function (p) { return "⌨️ Type → “" + (p.text || "…") + "”"; },
+    delay: function (p) { return "⏱️ Delay → " + p.ms + " ms"; },
+  };
+
+  function renderQueue(execIdx) {
+    queueEl.innerHTML = "";
     if (!actions.length) {
-      elList.innerHTML = '<div class="demo-empty">No actions added yet. Select a type above.</div>';
-      elRunBtn.disabled = false;
+      var li = document.createElement("li");
+      li.className = "pa-empty";
+      li.textContent = "queue is empty — add actions above";
+      queueEl.appendChild(li);
       return;
     }
-    elRunBtn.disabled = running;
-    elList.innerHTML = "";
     actions.forEach(function (a, i) {
-      var row = document.createElement("div");
-      row.className = "demo-action-item";
+      var li = document.createElement("li");
+      if (i === execIdx) li.className = "executing";
       var span = document.createElement("span");
-      span.textContent = (i + 1) + ". " + describe(a);
+      span.textContent = (i + 1) + ". " + LABELS[a.type](a.params);
       var btn = document.createElement("button");
-      btn.className = "demo-remove";
-      btn.title = "Remove";
       btn.textContent = "×";
+      btn.title = "remove";
       btn.addEventListener("click", function () {
         actions.splice(i, 1);
-        renderList();
+        renderQueue(-1);
       });
-      row.appendChild(span);
-      row.appendChild(btn);
-      elList.appendChild(row);
+      li.appendChild(span);
+      li.appendChild(btn);
+      queueEl.appendChild(li);
     });
   }
 
-  elAddBtn.addEventListener("click", function () {
-    actions.push({ type: elType.value, params: readParams() });
-    renderList();
+  /* ---------- Saved-Macros presets ---------- */
+  var PRESETS = [
+    { name: "Auto Login", hotkey: "Ctrl+L", steps: [
+      { type: "move", params: { x: 150, y: 60 } },
+      { type: "click", params: { target: "tUser" } },
+      { type: "type", params: { text: "player_one" } },
+      { type: "click", params: { target: "tPass" } },
+      { type: "type", params: { text: "hunter2" } },
+      { type: "delay", params: { ms: 300 } },
+      { type: "click", params: { target: "tLogin" } } ] },
+    { name: "Chest Farmer", hotkey: "F6", steps: [
+      { type: "click", params: { target: "tChest" } },
+      { type: "delay", params: { ms: 350 } },
+      { type: "click", params: { target: "tChest" } },
+      { type: "delay", params: { ms: 350 } },
+      { type: "click", params: { target: "tChest" } } ] },
+    { name: "Chat Greeter", hotkey: "Alt+G", steps: [
+      { type: "click", params: { target: "tChat" } },
+      { type: "type", params: { text: "hello world!" } },
+      { type: "delay", params: { ms: 400 } },
+      { type: "click", params: { target: "tChest" } } ] },
+  ];
+
+  var presetWrap = $("paPresets");
+  PRESETS.forEach(function (p, i) {
+    var b = document.createElement("button");
+    b.className = "pa-preset";
+    b.innerHTML =
+      '<div class="pa-preset-name">' + p.name + "</div>" +
+      '<div class="pa-preset-meta"><small>' + p.steps.length +
+      " actions</small><span class=\"pa-hotkey\">" + p.hotkey + "</span></div>";
+    b.addEventListener("click", function () {
+      userTouched = true;
+      if (running) stopReq = true;
+      presetWrap.querySelectorAll(".pa-preset").forEach(function (el, j) {
+        el.classList.toggle("active", j === i);
+      });
+      actions = p.steps.map(function (s) {
+        return { type: s.type, params: JSON.parse(JSON.stringify(s.params)) };
+      });
+      renderQueue(-1);
+      status('Loaded “' + p.name + "”…");
+      setTimeout(runMacro, 350);
+    });
+    presetWrap.appendChild(b);
   });
 
-  elClearBtn.addEventListener("click", function () {
-    if (running) return;
-    actions = [];
-    elText.textContent = "";
-    setStatus("");
-    renderList();
+  $("paRefresh").addEventListener("click", function () {
+    userTouched = true;
+    toast("Macros refreshed 🔄");
   });
 
-  function setStatus(msg) {
-    elStatus.innerHTML = msg;
-  }
-
-  /* ---------- Animation helpers ---------- */
+  /* ---------- animation helpers ---------- */
   function sleep(ms) {
-    return new Promise(function (res) {
-      setTimeout(res, ms);
-    });
+    return new Promise(function (r) { setTimeout(r, ms); });
   }
 
-  function easeInOutCubic(t) {
+  function ease(t) {
     return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   }
 
-  function moveCursorTo(x, y, duration) {
+  function moveCursor(x, y, dur) {
     return new Promise(function (resolve) {
-      var from = { x: cursorPos.x, y: cursorPos.y };
-      var start = null;
+      var fx = cursorPos.x, fy = cursorPos.y, start = null;
       function frame(ts) {
-        if (stopRequested) return resolve();
+        if (stopReq) return resolve();
         if (start === null) start = ts;
-        var p = Math.min(1, (ts - start) / duration);
-        var e = easeInOutCubic(p);
-        cursorPos.x = from.x + (x - from.x) * e;
-        cursorPos.y = from.y + (y - from.y) * e;
-        elCursor.style.left = cursorPos.x + "px";
-        elCursor.style.top = cursorPos.y + "px";
-        if (p < 1) requestAnimationFrame(frame);
-        else resolve();
+        var p = Math.min(1, (ts - start) / dur);
+        var e = ease(p);
+        cursorPos.x = fx + (x - fx) * e;
+        cursorPos.y = fy + (y - fy) * e;
+        cursor.style.left = cursorPos.x + "px";
+        cursor.style.top = cursorPos.y + "px";
+        p < 1 ? requestAnimationFrame(frame) : resolve();
       }
       requestAnimationFrame(frame);
     });
@@ -164,144 +198,171 @@
 
   function ripple(x, y) {
     var r = document.createElement("div");
-    r.className = "demo-ripple";
+    r.className = "pa-ripple";
     r.style.left = x + "px";
     r.style.top = y + "px";
-    elBody.appendChild(r);
-    setTimeout(function () {
-      r.remove();
-    }, 650);
+    screen.appendChild(r);
+    setTimeout(function () { r.remove(); }, 600);
   }
 
   function centerOf(id) {
-    var el = document.getElementById(id);
+    var el = $(id);
     return {
       x: el.offsetLeft + el.offsetWidth / 2,
       y: el.offsetTop + el.offsetHeight / 2,
     };
   }
 
-  /* ---------- Action execution ---------- */
-  async function runAction(a, idx, total) {
-    if (stopRequested) return;
-    setStatus('<span class="running">▶ Running action ' + (idx + 1) + " of " + total + "…</span>");
+  /* ---------- live reactions inside the fake app ---------- */
+  var loginDone = false;
+  $("tLogin").addEventListener("click", function () {
+    if (loginDone) return;
+    var u = $("tUser").value.trim();
+    if (!u) { toast("Enter a username first 🙂"); return; }
+    loginDone = true;
+    this.classList.add("done");
+    this.textContent = "✓ Welcome, " + u + "!";
+    setTimeout(function () {
+      var b = $("tLogin");
+      b.classList.remove("done");
+      b.textContent = "Log in";
+      loginDone = false;
+    }, 2500);
+  });
 
+  $("tChest").addEventListener("click", function () {
+    this.classList.add("pop");
+    toast("+50 gold 🪙");
+    setTimeout(function () { $("tChest").classList.remove("pop"); }, 200);
+  });
+
+  /* ---------- action execution ---------- */
+  async function runAction(a, idx) {
+    renderQueue(idx);
     switch (a.type) {
       case "move":
-        await moveCursorTo(a.params.x, a.params.y, 700);
+        await moveCursor(a.params.x, a.params.y, 650);
         break;
-
       case "click": {
         var c = centerOf(a.params.target);
-        await moveCursorTo(c.x, c.y, 600);
-        if (stopRequested) return;
+        await moveCursor(c.x, c.y, 550);
+        if (stopReq) return;
         ripple(c.x, c.y);
-        var btn = document.getElementById(a.params.target);
-        btn.classList.add("demo-btn-active");
-        await sleep(350);
-        btn.classList.remove("demo-btn-active");
+        await sleep(120);
+        $(a.params.target).click();
+        await sleep(280);
         break;
       }
-
-      case "type":
+            case "type": {
+        var field = document.activeElement;
+        if (!field || field.tagName !== "INPUT" ||
+            !screen.contains(field)) field = $("tUser");
         for (var i = 0; i < a.params.text.length; i++) {
-          if (stopRequested) return;
-          elText.textContent += a.params.text[i];
-          await sleep(75);
+          if (stopReq) return;
+          field.value += a.params.text[i];
+          await sleep(65);
         }
         break;
-
+      }
       case "delay":
         var waited = 0;
-        while (waited < a.params.ms && !stopRequested) {
-          var step = Math.min(100, a.params.ms - waited);
-          await sleep(step);
-          waited += step;
+        while (waited < a.params.ms && !stopReq) {
+          await sleep(Math.min(100, a.params.ms - waited));
+          waited += 100;
         }
         break;
     }
+  }
+
+  async function playOnce() {
+    for (var i = 0; i < actions.length; i++) {
+      if (stopReq) return false;
+      await runAction(actions[i], i);
+    }
+    return true;
   }
 
   async function runMacro() {
     if (!actions.length || running) return;
     running = true;
-    stopRequested = false;
-    elRunBtn.disabled = true;
-    elStopBtn.style.display = "";
-    elClearBtn.disabled = true;
+    stopReq = false;
+    $("paRun").hidden = true;
+    $("paStop").hidden = false;
 
-    for (var i = 0; i < actions.length; i++) {
-      if (stopRequested) break;
-      await runAction(actions[i], i, actions.length);
-    }
+    do {
+      var ok = await playOnce();
+      if (stopReq) break;
+    } while (loopChk.checked && ok);
 
     running = false;
-    elRunBtn.disabled = false;
-    elStopBtn.style.display = "none";
-    elClearBtn.disabled = false;
-    renderList();
-    setStatus(stopRequested ? "⏹ Stopped." : "✅ Macro finished!");
+    $("paRun").hidden = false;
+    $("paStop").hidden = true;
+    renderQueue(-1);
+    status(stopReq ? "⏹ Stopped." : "✅ Macro finished!", !stopReq);
   }
 
-  elRunBtn.addEventListener("click", runMacro);
-  elStopBtn.addEventListener("click", function () {
-    stopRequested = true;
+  $("paRun").addEventListener("click", function () {
+    userTouched = true;
+    runMacro();
+  });
+  $("paStop").addEventListener("click", function () {
+    userTouched = true;
+    stopReq = true;
   });
 
-  /* ---------- Auto-playing example macro ----------
-   * A sample macro is pre-loaded and loops automatically
-   * when the section scrolls into view. Any visitor
-   * interaction (add / clear / stop) hands over control.
-   */
-  var EXAMPLE = [
-    { type: "move", params: { x: 300, y: 250 } },
-    { type: "delay", params: { ms: 400 } },
-    { type: "click", params: { target: "targetBtn1" } },
-    { type: "move", params: { x: 480, y: 130 } },
-    { type: "type", params: { text: "Hello from Pico Macro Builder!" } },
-    { type: "delay", params: { ms: 600 } },
-    { type: "click", params: { target: "targetBtn2" } }
-  ];
+  /* ---------- composer: add action ---------- */
+  $("paAdd").addEventListener("click", function () {
+    userTouched = true;
+    actions.push({ type: typeSel.value, params: readParams() });
+    renderQueue(-1);
+  });
 
-  var userInteracted = false;
-  var autoStarted = false;
-
-  [elAddBtn, elClearBtn, elStopBtn].forEach(function (b) {
+  /* ---------- playful toolbar toasts ---------- */
+  document.querySelectorAll(".pa-tbtn[data-toast]").forEach(function (b) {
     b.addEventListener("click", function () {
-      userInteracted = true;
+      userTouched = true;
+      toast(b.getAttribute("data-toast"));
     });
   });
 
-  async function autoLoop() {
-    while (!userInteracted && !running) {
-      await runMacro();
-      if (userInteracted) break;
-      // short pause between loops (abortable)
-      for (var t = 0; t < 20 && !userInteracted; t++) {
-        await sleep(100);
-      }
-    }
-  }
+  loopChk.addEventListener("change", function () {
+    userTouched = true;
+    if (loopChk.checked) toast("Loop enabled — macros repeat until ⏹ Stop");
+  });
 
-  /* ---------- Init ---------- */
-  actions = EXAMPLE.slice();
-  renderList();
-  elCursor.style.left = cursorPos.x + "px";
-  elCursor.style.top = cursorPos.y + "px";
-  setStatus('<span class="running">▶ Example playing — clear it & build your own!</span>');
+  /* ---------- auto-play demo on scroll into view ---------- */
+  function startAuto() {
+    actions = PRESETS[0].steps.map(function (s) {
+      return { type: s.type, params: JSON.parse(JSON.stringify(s.params)) };
+    });
+    presetWrap.querySelectorAll(".pa-preset")[0].classList.add("active");
+    renderQueue(-1);
+    cursor.style.left = cursorPos.x + "px";
+    cursor.style.top = cursorPos.y + "px";
+    status("▶ Auto-playing “Auto Login” — click around to take over!");
+    (async function () {
+      while (!userTouched) {
+        await runMacro();
+        if (userTouched) break;
+        for (var t = 0; t < 25 && !userTouched; t++) await sleep(100);
+      }
+    })();
+  }
 
   if ("IntersectionObserver" in window) {
     var obs = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting && !autoStarted) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting && !autoStarted) {
           autoStarted = true;
           obs.disconnect();
-          setTimeout(autoLoop, 800);
+          setTimeout(startAuto, 700);
         }
       });
-    }, { threshold: 0.35 });
-    obs.observe(document.getElementById("demo"));
+    }, { threshold: 0.3 });
+    obs.observe($("demo"));
   } else {
-    setTimeout(autoLoop, 1500);
+    setTimeout(startAuto, 1200);
   }
+
+  renderQueue(-1);
 })();

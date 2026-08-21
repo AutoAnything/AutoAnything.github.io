@@ -32,100 +32,71 @@
     </nav>
 
     <!-- ===== HERO ===== -->
-    <section class="hero">
+    <section class="hero" id="demo">
       <div class="container hero-inner">
         <div class="hero-text">
           <h1 class="hero-title">
-            <span class="gradient-text">Automate</span> Your
+            <span class="gradient-text">Automate</span> your
             <span class="gradient-text">Raspberry Pi Pico</span>
           </h1>
           <p class="hero-subtitle">
-            Create and execute automated mouse & keyboard macros with advanced
-            pixel-color detection, global hotkeys, and real-time position
-            overlay — all in one powerful desktop application.
+            Record mouse moves, clicks and keystrokes, wait for pixel colors,
+            trigger everything with global hotkeys. Try the live replica 👉
           </p>
           <div class="hero-cta">
             <button id="checkout-btn" class="hero-buy-btn">
               <span class="btn-text">Buy Now — €29.99</span>
-              <span class="btn-sub">Excluding delivery fee</span>
+              <span class="btn-sub">one-time · excl. delivery</span>
             </button>
-                        <p class="hero-note">
-              One-time purchase · Windows · Instant download after purchase
-            </p>
+            <p class="hero-note">Windows · instant download · lifetime updates</p>
             <div class="stripe-message"></div>
           </div>
         </div>
-        <div class="hero-visual">
-          <div class="app-mockup">
-            <div class="browser-frame">
-              <div class="browser-header">
-                <div class="browser-dots">
-                  <span class="dot dot-red"></span>
-                  <span class="dot dot-yellow"></span>
-                  <span class="dot dot-green"></span>
-                </div>
-                <span class="browser-url">Pico Macro Builder</span>
+        <div class="hero-app">
+          <div class="pa-titlebar">
+            <span class="pa-dots"><i class="pa-dot pa-r"></i><i class="pa-dot pa-y"></i><i class="pa-dot pa-g"></i></span>
+            <span class="pa-title">Macro Builder – Pico Controller</span>
+            <span class="pa-badge">LIVE DEMO</span>
+          </div>
+          <div class="pa-body">
+            <aside class="pa-sidebar">
+              <div class="pa-side-head"><span>📁 Saved Macros</span><button id="paRefresh" title="Refresh">🔄</button></div>
+              <div id="paPresets"></div>
+              <p class="pa-side-hint">click a macro to load &amp; run it</p>
+            </aside>
+            <main class="pa-main">
+              <div class="pa-mainhead"><h1>Macro Builder</h1><label class="pa-loop"><input type="checkbox" id="paLoop"> Loop</label></div>
+              <div class="pa-toolbar">
+                <button class="pa-tbtn" data-toast="New empty macro created ✨">＋ New</button>
+                <button class="pa-tbtn" data-toast="🎨 Pixel Test needs a connected Pico 🔌">＋ Pixel Test</button>
+                <button class="pa-tbtn" data-toast="Saved to your macros folder 💾">💾 Save</button>
+                <button class="pa-tbtn" data-toast="Resolution locked to this preview 😄">⚙️ Res</button>
+                <button id="paRun" class="pa-tbtn pa-run">▶️ Run</button>
+                <button id="paStop" class="pa-tbtn pa-stop" hidden>⏹ Stop</button>
               </div>
-              <div class="app-ui">
-                <div class="app-sidebar">
-                  <div class="app-sidebar-header">
-                    <span>Saved Macros</span>
-                    <button class="app-refresh">🔄</button>
-                  </div>
-                  <div class="app-sidebar-content">
-                    <div class="app-macro-item active">
-                      <div class="app-macro-name">Login Sequence</div>
-                      <div class="app-macro-details">12 actions · Ctrl+Alt+L</div>
-                    </div>
-                    <div class="app-macro-item">
-                      <div class="app-macro-name">Farm Bot</div>
-                      <div class="app-macro-details">8 actions · F1</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="app-main">
-                  <div class="app-header">
-                    <span class="app-title">Macro Builder</span>
-                    <div class="app-controls">
-                      <button class="app-btn app-btn-primary">+ Create New</button>
-                      <button class="app-btn app-btn-test">+ Pixel Test</button>
-                      <button class="app-btn app-btn-save">💾 Save</button>
-                      <button class="app-btn app-btn-run">▶️ Run</button>
-                      <button class="app-btn app-btn-settings">⚙️ Res</button>
-                      <label class="app-loop"><input type="checkbox" /> Loop</label>
-                    </div>
-                  </div>
-                  <div class="app-composer">
-                    <div class="app-composer-title">Quick Add Action</div>
-                    <select class="app-select">
-                      <option>🖱️ Move Mouse</option>
-                    </select>
-                    <button class="app-btn app-btn-add">+ Add</button>
-                  </div>
-                  <div class="app-macro-list">
-                    <div class="app-action">🖱️ Move Mouse — X:450, Y:320</div>
-                    <div class="app-action">👆 Click — Left Button</div>
-                    <div class="app-action">⏱️ Delay — 500 ms</div>
-                    <div class="app-action">🎨 Wait for Color</div>
-                    <div class="app-action">⌨️ Keyboard — "Hello World"</div>
-                  </div>
-                </div>
+              <div class="pa-composer">
+                <select id="paType">
+                  <option value="move">🖱️ Move Mouse</option>
+                  <option value="click">👆 Click</option>
+                  <option value="type">⌨️ Keyboard</option>
+                  <option value="delay">⏱️ Delay</option>
+                </select>
+                <span class="pa-pfields" id="paParams"></span>
+                <button id="paAdd" class="pa-addbtn">＋ Add</button>
               </div>
-            </div>
-            <div class="mouse-overlay-peek">
-              <div class="mouse-overlay-inner">
-                <span class="mouse-label">X</span><span class="mouse-value">782</span>
-                <span class="mouse-sep">|</span>
-                <span class="mouse-label">Y</span><span class="mouse-value">415</span>
-                <span class="mouse-sep">|</span>
-                <span class="mouse-label">RGB</span>
-                <span class="mouse-value">45</span>
-                <span class="mouse-sep">,</span>
-                <span class="mouse-value">126</span>
-                <span class="mouse-sep">,</span>
-                                <span class="mouse-value">221</span>
+              <div class="pa-screen" id="paScreen">
+                <div class="pa-screentitle">Game Launcher.exe</div>
+                <label class="pa-row">Username<input id="tUser" class="pa-field" autocomplete="off" spellcheck="false"></label>
+                <label class="pa-row">Password<input id="tPass" type="password" class="pa-field" autocomplete="off"></label>
+                <button id="tLogin" class="pa-loginbtn">Log in</button>
+                <button id="tChest" class="pa-chest" title="Treasure chest">🎁</button>
+                <input id="tChat" class="pa-chat" placeholder="Chat… say something" autocomplete="off">
+                <div class="pa-cursor" id="paCursor">🖱️</div>
               </div>
-            </div>
+              <ol class="pa-queue" id="paQueue"></ol>
+              <div class="pa-status" id="paStatus"></div>
+              <div class="pa-toast" id="paToast"></div>
+            </main>
           </div>
         </div>
       </div>
@@ -134,10 +105,9 @@
     <!-- ===== FEATURES ===== -->
     <section id="features" class="section">
       <div class="container">
-        <h2 class="section-title">Powerful Features</h2>
+        <h2 class="section-title">What's inside</h2>
         <p class="section-subtitle">
-          Everything you need to build, run, and manage complex automation macros
-          for your Raspberry Pi Pico.
+          The tools you actually need — nothing you don't.
         </p>
         <div class="features-grid">
           <div class="feature-card">
@@ -363,73 +333,7 @@
       </div>
         </section>
 
-    <!-- ===== DEMO ===== -->
-    <section id="demo" class="section">
-      <div class="container">
-        <h2 class="section-title">Interactive Live Demo</h2>
-        <p class="section-subtitle">
-          A sample macro plays automatically in the window — watch the cursor
-          move, click, and type!<br />
-          Clear it and build your own, or just hit ▶️ Run again. No download required.
-        </p>
-        <div class="demo-wrapper">
-          <!-- Macro Builder Panel -->
-          <div class="demo-builder">
-            <h3 class="demo-builder-title">Macro Builder</h3>
-            <div class="demo-action-form">
-              <label>Action Type:</label>
-              <select id="demoActionType">
-                <option value="move">🖱️ Move Mouse</option>
-                <option value="click">👆 Click</option>
-                <option value="type">⌨️ Type Text</option>
-                <option value="delay">⏱️ Delay</option>
-              </select>
-            </div>
-            <div class="demo-param-group">
-              <label id="demoParamLabel">Target:</label>
-              <input type="text" id="demoParamInput" placeholder="e.g. 420, 280" />
-            </div>
-            <button id="demoAddAction" class="demo-add-btn">+ Add Action</button>
-            <div class="demo-action-list" id="demoActionList">
-              <div class="demo-empty">No actions added yet. Select a type above.</div>
-            </div>
-                        <div class="demo-controls">
-              <button id="demoRunBtn" class="demo-run-btn">▶️ Run Macro</button>
-              <button id="demoStopBtn" class="demo-stop-btn" style="display:none;">⏹️ Stop</button>
-              <button id="demoClearBtn" class="demo-clear-btn">🗑️ Clear All</button>
-            </div>
-            <div class="demo-status" id="demoStatus"></div>
-          </div>
-
-          <!-- Demo Screen Window -->
-          <div class="demo-screen-wrapper">
-            <div class="demo-window">
-              <div class="demo-window-header">
-                <div class="demo-window-dots">
-                  <span class="demo-dot demo-dot-red"></span>
-                  <span class="demo-dot demo-dot-yellow"></span>
-                  <span class="demo-dot demo-dot-green"></span>
-                </div>
-                <span class="demo-window-title">Demo Application</span>
-              </div>
-              <div class="demo-window-body" id="demoWindowBody">
-                <div class="demo-desktop">
-                  <div class="demo-icon">📁 Documents</div>
-                  <div class="demo-icon">🌐 Browser</div>
-                  <div class="demo-icon">🎮 Game</div>
-                  <button class="demo-btn" id="targetBtn1" style="left:120px;top:200px;">Click Me</button>
-                  <button class="demo-btn" id="targetBtn2" style="left:300px;top:340px;">Press Here</button>
-                  <div class="demo-label">Sample Application</div>
-                  <div class="demo-text-display" id="demoTextDisplay"></div>
-                </div>
-                <div class="demo-cursor" id="demoCursor">🖱️</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
+    
     <!-- ===== PRICING ===== -->
     <section id="pricing" class="section">
       <div class="container">
