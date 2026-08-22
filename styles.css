@@ -1093,17 +1093,19 @@ body {
 
 /* ===== Pico App Replica (interactive demo) ===== */
 .hero-inner {
-  display: grid;
-  grid-template-columns: minmax(300px, 430px) minmax(0, 1fr);
-  gap: 40px;
-  align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 36px;
 }
 
+/* Demo windows sit on top, hero text moves below them */
 .hero-app {
   position: relative;
   display: flex;
   gap: 14px;
   align-items: stretch;
+  order: -1;
 }
 
 /* Each demo app is its own standalone window */

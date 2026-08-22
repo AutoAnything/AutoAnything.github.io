@@ -13,6 +13,13 @@
   var typeSel = $("paType");
   var paramsEl = $("paParams");
   var loopChk = $("paLoop");
+  var xyEl = $("paXY");
+
+  /* live X/Y readout of the demo cursor (shown in the DEMO chip) */
+  function updateXY() {
+    if (!xyEl) return;
+    xyEl.textContent = "X:" + Math.round(cursorPos.x) + " Y:" + Math.round(cursorPos.y);
+  }
 
   var actions = [];
   var running = false;
@@ -210,6 +217,7 @@
         cursorPos.y = fy + (y - fy) * e;
         cursor.style.left = cursorPos.x + "px";
         cursor.style.top = cursorPos.y + "px";
+        updateXY();
         p < 1 ? requestAnimationFrame(frame) : resolve();
       }
       requestAnimationFrame(frame);
@@ -365,6 +373,7 @@
     renderQueue(-1);
     cursor.style.left = cursorPos.x + "px";
     cursor.style.top = cursorPos.y + "px";
+    updateXY();
     status("▶ Auto-playing “Auto Login” — click around to take over!");
     (async function () {
       while (!userTouched) {
